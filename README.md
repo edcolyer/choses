@@ -1,27 +1,62 @@
 # Choses
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.5.
+Choses is an open-source task management application inspired by Things for OSX/iOS. The goal of this project is to extend the functionality of Things with additional features tailored to personal preferences. This experimental project leverages GPT-4 to quickly build a simple app while exploring new technologies and development practices.
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Task management
+- (Add other desired features here)
 
-## Code scaffolding
+## Tech Stack
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Electron for cross-platform desktop application support
+- Angular for front-end development
+- TypeScript for type-safe JavaScript code
+- Sass (SCSS) for styling
 
-## Build
+## Getting Started
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Prerequisites
 
-## Running unit tests
+- Node.js (version 12 or higher)
+- npm (version 6 or higher)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Installation
 
-## Running end-to-end tests
+1. Clone the repository:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
+git clone https://github.com/yourusername/choses.git
+```
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+2. Change to the project directory:
+
+```
+cd choses
+```
+
+3. Install the dependencies:
+
+```
+npm install
+```
+
+4. Start the development server:
+
+```
+npm run start:electron
+```
+
+The app should now be running with hot-reloading enabled for both Angular and Electron.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to the project, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bugfix.
+3. Make your changes and commit them to your branch.
+4. Submit a pull request to the main repository for review.
+
+Please make sure your code follows the project's ESLint rules and includes appropriate tests if applicable.
