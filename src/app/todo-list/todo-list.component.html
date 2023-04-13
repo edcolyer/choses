@@ -1,34 +1,19 @@
-<div class="todo-list container mx-auto mt-10">
-  <h2 class="text-2xl mb-5">Todo List</h2>
-  <form (submit)="addTodo()" class="mb-5">
-    <input
-      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      [(ngModel)]="newTodo.content"
-      [ngModelOptions]="{ standalone: true }"
-      placeholder="Enter a new todo"
-      required
-    />
-    <button
-      type="submit"
-      class="bg-blue-500 text-white px-5 py-2 rounded-lg ml-3 focus:outline-none hover:bg-blue-600"
-    >
-      Add Todo
-    </button>
-  </form>
-  <ul>
-    <li *ngFor="let todo of todos" class="flex items-center mb-2">
-      <input
-        type="checkbox"
-        [checked]="todo.complete"
-        (change)="toggleComplete(todo)"
-        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-      />
-      <span
-        [ngClass]="{ 'line-through': todo.complete }"
-        class="ml-3"
-      >
-        {{ todo.content }}
-      </span>
-    </li>
-  </ul>
+<div *ngIf="allowCreate" class="todo-list container mx-auto mt-10">
+  <button
+    (click)="createNewTodo()"
+    class="bg-blue-500 text-white px-5 py-2 rounded-lg focus:outline-none hover:bg-blue-600"
+  >
+    New Todo
+  </button>
 </div>
+<ul>
+  <li *ngFor="let todo of todos">
+    <app-todo
+      [todo]="todo"
+      (onComplete)="toggleComplete($event)"
+      (onDelete)="deleteTodo($event)"
+      (onUpdateContent)="updateTodoContent($event.todo, $event.newContent)"
+      (onSelect)="selectTodo($event)"
+    ></app-todo>
+  </li>
+</ul>
