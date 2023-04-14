@@ -10,6 +10,7 @@ import { AppLayoutComponent } from './app-layout/app-layout.component';
 import { TodayComponent } from './pages/today/today.component';
 import { CompletedComponent } from './pages/completed/completed.component';
 import { TodoComponent } from './todo/todo.component';
+import { UpcomingComponent } from './pages/upcoming/upcoming.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { TodoComponent } from './todo/todo.component';
     AppLayoutComponent,
     TodayComponent,
     CompletedComponent,
-    TodoComponent
+    TodoComponent,
+    UpcomingComponent
   ],
   imports: [
     BrowserModule,

@@ -1,33 +1,67 @@
 <div
-  class="flex items-center mb-2"
-  [ngClass]="{ 'bg-blue-100': selected, 'dark:bg-blue-900': selected }"
+  class="flex flex-col p-2 mb-2 bg-white rounded-lg shadow-sm"
+  [ngClass]="{
+    'bg-blue-100': todo.state === 'selected',
+    'dark:bg-blue-900': todo.state === 'selected',
+    'dark:bg-gray-800': todo.state !== 'selected'
+  }"
   (click)="select()"
+  (dblclick)="expand()"
 >
-  <ng-container *ngIf="!todo.editMode">
+  <div class="flex items-center">
     <input
       type="checkbox"
       [checked]="todo.complete"
       (change)="toggleComplete()"
+      (click)="$event.stopPropagation()"
       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded"
     />
-    <span
-      [ngClass]="{ 'line-through': todo.complete }"
-      class="ml-3 text-gray-900 dark:text-gray-200"
-      (click)="select()"
-      contenteditable
+    <ng-container *ngIf="todo.state === 'resting' || todo.state === 'selected'">
+      <span class="ml-3 text-gray-900 dark:text-gray-200">{{
+        todo.content
+      }}</span>
+    </ng-container>
+    <input
+      *ngIf="todo.state === 'expanded'"
+      [(ngModel)]="todo.content"
+      [ngModelOptions]="{ standalone: true }"
+      (focus)="focusContentInput()"
       (focusout)="updateContent($event)"
-    >
-      {{ todo.content }}
-    </span>
+      (keydown)="handleKeydown($event)"
+      class="w-full ml-3 flex-grow border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"
+      placeholder="Type your todo..."
+      required
+      #contentInput
+    />
+  </div>
+  <div class="flex items-center mt-2 ml-7">
     <span
-      *ngIf="todo.estimation"
+      *ngIf="
+        todo.estimation &&
+        (todo.state === 'resting' || todo.state === 'selected')
+      "
       class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
       [ngClass]="{ 'line-through': todo.complete }"
     >
       {{ todo.estimation }} mins
     </span>
+    <div class="relative" *ngIf="todo.state === 'expanded'">
+      <input
+        [(ngModel)]="todo.estimation"
+        (keydown)="handleKeydown($event)"
+        type="number"
+        min="0"
+        class="ml-2 w-20 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"
+      />
+      <span
+        class="absolute inset-y-0 right-0 pr-2 text-gray-400 text-sm font-medium flex items-center"
+        >mins</span
+      >
+    </div>
     <span
-      *ngIf="todo.dueDate"
+      *ngIf="
+        todo.dueDate && (todo.state === 'resting' || todo.state === 'selected')
+      "
       class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium"
       [ngClass]="{
         'bg-red-100 text-red-800': isBeforeToday(todo.dueDate),
@@ -39,30 +73,12 @@
     >
       Due {{ todo.dueDate | date : "d MMM 'YY" }}
     </span>
-  </ng-container>
-  <ng-container *ngIf="todo.editMode">
     <input
-      [(ngModel)]="todo.content"
-      [ngModelOptions]="{ standalone: true }"
-      (focusout)="updateContent($event)"
-      class="ml-3 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent mr-3 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"
-      placeholder="Enter todo content"
-      required
-    />
-    <input
-      [(ngModel)]="todo.estimation"
-      [ngModelOptions]="{ standalone: true }"
-      class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent mr-3 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"
-      placeholder="Estimation (mins)"
-      type="number"
-      min="1"
-    />
-    <input
+      *ngIf="todo.dueDate && todo.state === 'expanded'"
       [(ngModel)]="todo.dueDate"
-      [ngModelOptions]="{ standalone: true }"
-      class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent mr-3 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"
-      placeholder="Due date"
+      (keydown)="handleKeydown($event)"
       type="date"
+      class="ml-2 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"
     />
-  </ng-container>
+  </div>
 </div>

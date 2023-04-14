@@ -1,12 +1,12 @@
-<div *ngIf="allowCreate" class="todo-list container mx-auto mt-10">
+<div *ngIf="allowCreate" class="todo-list container mx-auto mt-10 mb-4">
   <button
     (click)="createNewTodo()"
-    class="bg-blue-500 text-white px-5 py-2 rounded-lg focus:outline-none hover:bg-blue-600"
+    class="bg-blue-500 text-white px-5 py-2 rounded-lg focus:outline-none hover:bg-blue-600 mb-4"
   >
     New Todo
   </button>
 </div>
-<ul>
+<ul (keydown)="deleteSelectedTodo($event)" tabindex="0">
   <li *ngFor="let todo of todos">
     <app-todo
       [todo]="todo"
@@ -14,6 +14,7 @@
       (onDelete)="deleteTodo($event)"
       (onUpdateContent)="updateTodoContent($event.todo, $event.newContent)"
       (onSelect)="selectTodo($event)"
+      (onExpand)="handleExpand($event)"
     ></app-todo>
   </li>
 </ul>

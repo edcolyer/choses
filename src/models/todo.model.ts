@@ -4,5 +4,5 @@ export interface Todo {
   complete: boolean;
   estimation: number | null;
   dueDate: Date | null;
-  editMode?: boolean;
+  state: 'resting' | 'selected' | 'expanded';
 }
