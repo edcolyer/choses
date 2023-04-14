@@ -8,6 +8,7 @@ import { Router, Event, NavigationEnd } from '@angular/router';
 })
 export class AppLayoutComponent {
   public pageTitle = '';
+  public isMobileMenuOpen = false;
 
   constructor(private router: Router) {
     this.router.events.subscribe((event: Event) => {
@@ -33,5 +34,9 @@ export class AppLayoutComponent {
       default:
         return '';
     }
+  }
+
+  public toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 }
