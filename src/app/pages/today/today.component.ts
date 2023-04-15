@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FilterMode } from '../../todo-list/todo-list.component';
 
 @Component({
   selector: 'app-today',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./today.component.scss']
 })
 export class TodayComponent {
-
+  public filterModeEnum = FilterMode;
 }

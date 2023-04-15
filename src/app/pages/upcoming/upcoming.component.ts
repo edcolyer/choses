@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FilterMode } from 'src/app/todo-list/todo-list.component';
 
 @Component({
   selector: 'app-upcoming',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./upcoming.component.scss']
 })
 export class UpcomingComponent {
-
+  public filterModeEnum = FilterMode;
 }

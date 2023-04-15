@@ -75,7 +75,8 @@
     </span>
     <input
       *ngIf="todo.dueDate && todo.state === 'expanded'"
-      [(ngModel)]="todo.dueDate"
+      [ngModel]="dueDateInput"
+      (ngModelChange)="dueDateInput = $event"
       (keydown)="handleKeydown($event)"
       type="date"
       class="ml-2 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800"

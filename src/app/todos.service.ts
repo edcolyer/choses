@@ -27,4 +27,7 @@ export class TodosService {
     this.todosSubject.next(this.todos);
   }
 
+  public getTodos(): Todo[] {
+    return this.todos;
+  }
 }

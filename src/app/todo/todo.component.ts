@@ -8,8 +8,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { Todo } from '../../models/todo.model';
-import { startOfDay } from 'date-fns';
-import { isBefore } from 'date-fns';
+import { isBefore, parseISO, startOfDay } from 'date-fns';
 
 @Component({
   selector: 'app-todo',
@@ -35,6 +34,14 @@ export class TodoComponent implements AfterViewInit {
     if (this.todo.state === 'expanded') {
       this.contentInput.nativeElement.focus();
     }
+  }
+
+  get dueDateInput(): string {
+    return this.todo.dueDate ? this.todo.dueDate.toISOString().substring(0, 10) : '';
+  }
+  
+  set dueDateInput(value: string) {
+    this.todo.dueDate = value ? new Date(value) : null;
   }
 
   public toggleComplete() {
@@ -83,6 +90,6 @@ export class TodoComponent implements AfterViewInit {
   }
 
   public isBeforeToday(date: Date): boolean {
-    return isBefore(date, startOfDay(new Date()));
+    return isBefore(parseISO(date.toString()), new Date());
   }
 }

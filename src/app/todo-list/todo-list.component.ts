@@ -1,9 +1,9 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Todo } from '../../models/todo.model';
 import { TodosService } from '../todos.service';
-import { startOfDay, toDate } from 'date-fns';
+import { isSameDay, startOfDay, toDate } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { isAfter, isBefore } from 'date-fns';
+import { endOfDay, isAfter, isBefore, parseISO, startOfTomorrow } from 'date-fns';
 
 @Component({
   selector: 'app-todo-list',
@@ -12,8 +12,7 @@ import { isAfter, isBefore } from 'date-fns';
 })
 export class TodoListComponent implements OnInit {
   @Input() allowCreate = true;
-  @Input() showCompleted = false;
-  @Input() showUpcoming = false;
+  @Input() filterMode: FilterMode = FilterMode.ALL;
 
   public todos: Todo[] = [];
   public newTodo: Todo = {
@@ -21,8 +20,12 @@ export class TodoListComponent implements OnInit {
     content: '',
     complete: false,
     estimation: null,
-    dueDate: toDate(startOfDay(utcToZonedTime(new Date(), 'Australia/Sydney'))),
-    state: 'expanded'
+    dueDate: toDate(
+      parseISO(
+        startOfDay(utcToZonedTime(new Date(), 'Australia/Sydney')).toISOString()
+      )
+    ),
+    state: 'expanded',
   };
   public selectedTodo: Todo | null = null;
 
@@ -30,13 +33,44 @@ export class TodoListComponent implements OnInit {
 
   ngOnInit(): void {
     this.todosService.todos$.subscribe((todos) => {
-      if (this.showUpcoming) {
-        this.todos = todos.filter((todo) => !todo.complete && todo.dueDate && isAfter(todo.dueDate, new Date()));
-      } else {
-        this.todos = todos.filter((todo) => todo.complete === this.showCompleted);
-      }
+      this.updateFilteredTodos(todos);
     });
+  }  
+
+  private updateFilteredTodos(todos: Todo[]): void {
+    switch (this.filterMode) {
+      case FilterMode.TODAY:
+        this.todos = todos.filter((todo) => {
+          if (todo.complete) return false;
+          if (!todo.dueDate) return true;
+          const today = new Date();
+          return (
+            isBefore(todo.dueDate, endOfDay(today)) ||
+            isSameDay(todo.dueDate, today)
+          );
+        });
+        break;
+
+      case FilterMode.UPCOMING:
+        this.todos = todos.filter((todo) => {
+          if (todo.complete) return false;
+          if (!todo.dueDate) return false;
+          const tomorrow = startOfTomorrow();
+          return isAfter(todo.dueDate, tomorrow);
+        });
+        break;
+
+      case FilterMode.COMPLETED:
+        this.todos = todos.filter((todo) => todo.complete);
+        break;
+
+      case FilterMode.ALL:
+      default:
+        this.todos = todos;
+        break;
+    }
   }
+  
 
   public createNewTodo() {
     if (this.todos.some((todo) => !todo.content)) {
@@ -49,12 +83,18 @@ export class TodoListComponent implements OnInit {
       complete: false,
       estimation: null,
       dueDate: toDate(
-        startOfDay(utcToZonedTime(new Date(), 'Australia/Sydney'))
+        parseISO(
+          startOfDay(
+            utcToZonedTime(new Date(), 'Australia/Sydney')
+          ).toISOString()
+        )
       ),
-      state: 'expanded'
+      state: 'expanded',
     };
 
     this.todosService.addTodo(newTodo);
+
+    this.updateFilteredTodos(this.todosService.getTodos());
   }
 
   public toggleComplete(todo: Todo) {
@@ -95,7 +135,7 @@ export class TodoListComponent implements OnInit {
   }
 
   public handleExpand(expandedTodo: Todo) {
-    this.todos.forEach(todo => {
+    this.todos.forEach((todo) => {
       if (todo !== expandedTodo && todo.state === 'expanded') {
         todo.state = 'resting';
       }
@@ -110,4 +150,11 @@ export class TodoListComponent implements OnInit {
       }
     }
   }
+}
+
+export enum FilterMode {
+  TODAY,
+  UPCOMING,
+  COMPLETED,
+  ALL,
 }
